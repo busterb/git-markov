@@ -13,15 +13,17 @@ args = ''
 if len(sys.argv) > 1:
     args = ' '.join(sys.argv[1::])
 
-git_log = os.popen("git log --pretty=oneline --abbrev-commit " + args)
+git_log = os.popen("git log " + args)
 for line in git_log:
-    for word in line.split()[1:]:
-        table.setdefault( (w1, w2), [] ).append(word)
-        w1, w2 = w2, word
+    words = line.split()
+    if len(words) and words[0] not in ('commmit', 'Author:', 'Date:'):
+        for word in words:
+            table.setdefault( (w1, w2), [] ).append(word)
+            w1, w2 = w2, word
 
 table.setdefault( (w1, w2), [] ).append(nonword)
 
-maxwords = int(random.random() * 50)
+maxwords = int(random.random() * 50) + 10
 (w1, w2) = random.choice(table.keys())
 
 first = True
@@ -35,4 +37,4 @@ for i in xrange(maxwords):
         print(newword),
     w1, w2 = w2, newword
 
-random.choice(("Ha", "Haha", "Waka waka!", "Heyoooo!", "Ba-dum Ting!"))
+print random.choice(("Ha", "Haha", "Waka waka!", "Heyoooo!", "Ba-dum Ting!"))
