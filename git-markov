@@ -1,0 +1,38 @@
+#!/usr/bin/env python
+
+import random, sys, os
+
+random.seed()
+nonword = "\n"
+w1 = nonword
+w2 = nonword
+
+table = {}
+
+args = ''
+if len(sys.argv) > 1:
+    args = ' '.join(sys.argv[1::])
+
+git_log = os.popen("git log --pretty=oneline --abbrev-commit " + args)
+for line in git_log:
+    for word in line.split()[1:]:
+        table.setdefault( (w1, w2), [] ).append(word)
+        w1, w2 = w2, word
+
+table.setdefault( (w1, w2), [] ).append(nonword)
+
+maxwords = int(random.random() * 50)
+(w1, w2) = random.choice(table.keys())
+
+first = True
+for i in xrange(maxwords):
+    newword = random.choice(table[(w1, w2)])
+    if newword == nonword: sys.exit()
+    if first:
+        print(newword.capitalize()),
+        first = False
+    else:
+        print(newword),
+    w1, w2 = w2, newword
+
+random.choice(("Ha", "Haha", "Waka waka!", "Heyoooo!", "Ba-dum Ting!"))
